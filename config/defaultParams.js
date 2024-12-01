@@ -30,6 +30,9 @@ const defaultParams = {
     maxRadius: 30, // max size of snowflakes
     minSpeed: 3, // min fall speed of snowflakes
     maxSpeed: 6, // max fall speed of snowflakes
+    minHorizontalSpeed: 1,
+    maxHorizontalSpeed: 2,
+    delta: 0.006,
     text: "\u2744", // symbol or text of the snowflakes
     color: "#99ccff", // color of the snowflakes
     zIndex: "1000", // adjust according to project stacking context

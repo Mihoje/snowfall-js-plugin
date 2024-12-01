@@ -44,13 +44,17 @@ export class Snowflake {
    * @param {string} c - The color.
    * @param {string} t - The text.
    */
-  constructor(canvas, h, s, c, t) {
+  constructor(canvas, h, s, hs, c, t, delta) {
     this.x = Math.random() * canvas.width;
     this.y = Math.random() * canvas.height;
     this.h = h;
     this.s = s;
+    this.hs = hs * (Math.floor(Math.random() * 2) ? -1 : 1);
     this.c = c;
     this.t = t;
+    this.maxdelta = hs;
+    this.direction = 1;
+    this.delta = delta;
   }
 
   /**
@@ -175,6 +179,13 @@ export class Snowflake {
   update = (canvas) => {
     // increase the y coordinate by the speed
     this.y += this.s;
+    this.x += this.hs;
+
+    this.hs += this.delta * this.direction;
+
+    if (this.hs > this.maxdelta || this.hs < -this.maxdelta) {
+      this.direction *= -1;
+    }
 
     if (this.s > 0) {
       // if the snowflake goes beyond the bottom edge of the canvas, move it to the top
@@ -216,9 +227,12 @@ export class Snowfall {
       maxRadius = 30,
       minSpeed = 3,
       maxSpeed = 10,
+      minHorizontalSpeed = 1,
+      maxHorizontalSpeed = 2,
       text = "❄",
       color = "#99ccff",
       zIndex = "1000",
+      delta = 0.006,
     } = options;
 
     count = Number(count);
@@ -258,8 +272,11 @@ export class Snowfall {
     this.maxRadius = maxRadius;
     this.minSpeed = minSpeed;
     this.maxSpeed = maxSpeed;
+    this.minHorizontalSpeed = minHorizontalSpeed;
+    this.maxHorizontalSpeed = maxHorizontalSpeed;
     this.color = color;
     this.text = text;
+    this.delta = delta;
 
     this.createSnowflakes();
     this.animateSnowflakes();
@@ -331,8 +348,9 @@ export class Snowfall {
         rp = 100;
       }
       let s = this.minSpeed + ((this.maxSpeed - this.minSpeed) / 100) * rp;
+      let hs = this.minSpeed + ((this.maxSpeed - this.minSpeed) / 100) * rp;
 
-      let snowflake = new Snowflake(this.canvas, r, s, this.color, this.text);
+      let snowflake = new Snowflake(this.canvas, r, s, hs, this.color, this.text, this.delta);
       this.snowflakes.push(snowflake);
     }
   };
